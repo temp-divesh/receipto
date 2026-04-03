@@ -1,0 +1,1185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Receipto — Your Bills, On WhatsApp</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=cabinet-grotesk@700,600,500,800&display=swap">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --green: #075E54;
+    --green-dark: #075E54;
+    --green-light: #e0f2ed;
+    --ink: #0a0f0d;
+    --fog: #f4f7f5;
+    --muted: #6b7c74;
+    --white: #ffffff;
+    --rule: rgba(0,0,0,0.06);
+    --highlight: #EEFFF5;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--fog);
+    color: var(--ink);
+    font-size: 16px;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    padding: 1.2rem 5%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(244,247,245,0.88);
+    backdrop-filter: blur(14px);
+    border-bottom: 1px solid rgba(7,94,84,0.15);
+  }
+
+  .logo {
+    font-family: 'Cabinet Grotesk', sans-serif;
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--ink);
+    text-decoration: none;
+  }
+
+  .logo span {
+    color: var(--green-dark);
+  }
+
+  .nav-cta {
+    background: var(--ink);
+    color: var(--white);
+    border: none;
+    padding: 0.6rem 1.4rem;
+    border-radius: 100px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background 0.2s, transform 0.15s;
+  }
+  .nav-cta:hover { background: var(--green-dark); transform: translateY(-1px); }
+
+  /* HERO */
+  .hero {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    gap: 3rem;
+    padding: 7.5rem 8% 4rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -100px; right: -150px;
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(7,94,84,0.18) 0%, transparent 70%);
+    border-radius: 50%;
+    pointer-events: none;
+  }
+
+  .hero::after {
+    content: '';
+    position: absolute;
+    bottom: -80px; left: -80px;
+    width: 350px; height: 350px;
+    background: radial-gradient(circle, rgba(7,94,84,0.1) 0%, transparent 70%);
+    border-radius: 50%;
+    pointer-events: none;
+  }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: var(--green-light);
+    color: var(--green-dark);
+    font-size: 0.8rem;
+    font-weight: 600;
+    padding: 0.4rem 1rem;
+    border-radius: 100px;
+    margin-bottom: 1.5rem;
+    letter-spacing: 0.03em;
+    animation: fadeUp 0.6s ease both;
+  }
+
+  .hero-badge::before {
+    content: '';
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--green-dark);
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  .hero h1 {
+    font-family: 'Cabinet Grotesk', sans-serif;
+    font-size: clamp(2.8rem, 5vw, 4.4rem);
+    font-weight: 600;
+    line-height: 1.05;
+    letter-spacing: -1px;
+    animation: fadeUp 0.7s 0.1s ease both;
+  }
+
+  .hero h1 em {
+    font-style: normal;
+    color: var(--green-dark);
+  }
+
+  .hero-sub {
+    margin-top: 1.5rem;
+    font-size: 1.1rem;
+    color: var(--muted);
+    max-width: 480px;
+    font-weight: 300;
+    line-height: 1.7;
+    animation: fadeUp 0.7s 0.2s ease both;
+  }
+
+  .hero-cta-group {
+    margin-top: 2.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    animation: fadeUp 0.7s 0.3s ease both;
+  }
+
+  .cta-hint {
+    font-size: 0.8rem;
+    color: var(--muted);
+  }
+
+  .whatsapp-icon {
+    width: 22px; height: 22px;
+  }
+
+  /* CHAT MOCKUP */
+  .hero-visual {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    animation: fadeUp 0.8s 0.2s ease both;
+  }
+
+  .chat-demo {
+    width: 360px;
+    flex-shrink: 0;
+  }
+
+  .chat-window {
+    background: #fff;
+    border-radius: 36px;
+    overflow: hidden;
+    box-shadow: 0 30px 80px rgba(0,0,0,0.12), 0 0 0 1px rgba(0,0,0,0.06);
+  }
+
+  .chat-header {
+    background: #075E54;
+    padding: 1rem 1.2rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .chat-avatar {
+    width: 42px; height: 42px;
+    border-radius: 50%;
+    background: #e8e8e8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    line-height: 1;
+  }
+
+  .chat-info { flex: 1; }
+  .chat-name { color: #fff; font-weight: 600; font-size: 0.9rem; }
+  .chat-status { color: rgba(255,255,255,0.65); font-size: 0.75rem; }
+
+  .chat-body {
+    background: #E5DDD5;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    min-height: 500px;
+  }
+
+  .bubble {
+    max-width: 85%;
+    padding: 0.6rem 0.9rem;
+    border-radius: 12px;
+    font-size: 0.82rem;
+    line-height: 1.5;
+    position: relative;
+    animation: msgIn 0.4s ease both;
+  }
+
+  @keyframes msgIn {
+    from { opacity: 0; transform: translateY(10px) scale(0.97); }
+    to { opacity: 1; transform: none; }
+  }
+
+  .bubble-time {
+    font-size: 0.65rem;
+    opacity: 0.55;
+    margin-top: 0.2rem;
+    text-align: right;
+  }
+
+  .bubble.in {
+    background: #fff;
+    align-self: flex-start;
+    border-bottom-left-radius: 3px;
+    color: #111;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.08);
+    box-shadow: 0 1px 2px rgba(0,0,0,0.08);
+  }
+
+  .bubble.out {
+    background: #DCF8C6;
+    align-self: flex-end;
+    border-bottom-right-radius: 3px;
+    color: #111;
+    text-align: right;
+  }
+
+  .chat-input-bar {
+    background: #f0f0f0;
+    padding: 0.7rem 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    border-top: 1px solid rgba(0,0,0,0.06);
+  }
+
+  .chat-input-field {
+    flex: 1;
+    background: #fff;
+    border-radius: 24px;
+    padding: 0.45rem 1rem;
+    font-size: 0.78rem;
+    color: #999;
+  }
+
+  .chat-send-btn {
+    width: 34px; height: 34px;
+    border-radius: 50%;
+    background: var(--green);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* SECTION COMMONS */
+  .section {
+    padding: 6rem 5%;
+  }
+
+  .section-label {
+    font-size: 0.78rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--green-dark);
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+  }
+
+  .section-title {
+    font-family: 'Cabinet Grotesk', sans-serif;
+    font-size: clamp(2rem, 3.5vw, 3rem);
+    font-weight: 600;
+    letter-spacing: -1px;
+    line-height: 1.1;
+    margin-bottom: 1rem;
+  }
+
+  .section-title em { font-style: normal; color: var(--green-dark); }
+
+  .section-sub {
+    color: var(--muted);
+    font-size: 1.05rem;
+    font-weight: 300;
+    line-height: 1.7;
+    max-width: 520px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  /* STATS BAND */
+  .stats-band {
+    background: var(--green);
+    color: #fff;
+    padding: 3.5rem 5%;
+  }
+
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2rem;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .stat { text-align: center; }
+
+  .stat-num {
+    font-family: 'Cabinet Grotesk', sans-serif;
+    font-size: 3rem;
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: -2px;
+  }
+
+  .stat-label {
+    font-size: 0.88rem;
+    opacity: 0.8;
+    margin-top: 0.4rem;
+    font-weight: 300;
+  }
+
+  /* HOW IT WORKS */
+  .steps {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 2rem;
+    margin-top: 3.5rem;
+    max-width: 1100px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .step {
+    background: #fff;
+    border-radius: 20px;
+    padding: 2rem;
+    border: 1px solid var(--rule);
+    transition: transform 0.25s, box-shadow 0.25s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .step:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 16px 48px rgba(0,0,0,0.08);
+  }
+
+  .step::before {
+    content: attr(data-n);
+    font-family: 'Cabinet Grotesk', sans-serif;
+    font-size: 5rem;
+    font-weight: 700;
+    position: absolute;
+    top: 0.5rem; right: 1rem;
+    color: rgba(7,94,84,0.08);
+    line-height: 1;
+  }
+
+  .step-icon {
+    width: 48px; height: 48px;
+    border-radius: 14px;
+    background: var(--green-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    margin-bottom: 1.2rem;
+  }
+
+  .step h3 {
+    font-family: 'Cabinet Grotesk', sans-serif;
+    font-size: 1.15rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+  }
+
+  .step p {
+    color: var(--muted);
+    font-size: 0.9rem;
+    line-height: 1.6;
+    font-weight: 300;
+    text-align: left;
+  }
+
+  .step h3 { text-align: left; }
+
+  /* QUERIES */
+  .queries-inner {
+    max-width: 800px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .query-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    justify-content: center;
+    margin-top: 2.5rem;
+  }
+
+  .pill {
+    background: var(--white);
+    border: 1px solid var(--rule);
+    border-radius: 100px;
+    padding: 0.6rem 1.2rem;
+    font-size: 0.875rem;
+    color: var(--muted);
+    cursor: default;
+    transition: all 0.2s;
+  }
+
+  .pill::before { content: '\201C'; color: var(--green); }
+  .pill::after  { content: '\201D'; color: var(--green); }
+
+  .pill:hover {
+    border-color: var(--green);
+    background: var(--highlight);
+    color: var(--ink);
+  }
+
+  /* FEATURES GRID */
+  .features-section {
+    background: var(--ink);
+    color: #fff;
+  }
+
+  .features-section .section-label { color: var(--green); }
+  .features-section .section-title { color: #fff; }
+  .features-section .section-title em { color: var(--green); }
+  .features-section .section-sub { color: rgba(255,255,255,0.5); }
+
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+    margin-top: 3.5rem;
+    max-width: 1100px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .feature-card {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 20px;
+    padding: 2rem;
+    transition: background 0.25s, border-color 0.25s;
+  }
+
+  .feature-card:hover {
+    background: rgba(255,255,255,0.07);
+    border-color: rgba(7,94,84,0.3);
+  }
+
+  .feature-icon {
+    font-size: 1.8rem;
+    margin-bottom: 1rem;
+  }
+
+  .feature-card h3 {
+    font-family: 'Cabinet Grotesk', sans-serif;
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+  }
+
+  .feature-card p {
+    color: rgba(255,255,255,0.5);
+    font-size: 0.9rem;
+    line-height: 1.65;
+    font-weight: 300;
+    text-align: left;
+  }
+
+  .feature-card h3 { text-align: left; }
+
+  .feature-tag {
+    display: inline-block;
+    margin-top: 0.75rem;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--green);
+    background: rgba(7,94,84,0.1);
+    padding: 3px 10px;
+    border-radius: 100px;
+  }
+
+  /* TESTIMONIALS */
+  .social-strip {
+    background: var(--white);
+    padding: 6rem 5%;
+  }
+
+  .social-strip .section-title {
+    margin: 0 auto 0.75rem;
+    text-align: center;
+  }
+
+  .social-strip .section-sub {
+    color: var(--muted);
+    margin: 0 auto 2.5rem;
+    text-align: center;
+  }
+
+  .testimonials {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1.5rem;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .tcard {
+    background: var(--fog);
+    border: 1px solid var(--rule);
+    border-radius: 20px;
+    padding: 2rem;
+    text-align: left;
+    transition: transform 0.25s;
+  }
+
+  .tcard:hover { transform: translateY(-3px); }
+
+  .tcard p {
+    font-size: 0.95rem;
+    line-height: 1.7;
+    color: var(--ink);
+    font-weight: 300;
+    margin-bottom: 1.5rem;
+  }
+
+  .tcard-author {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .tcard-avatar {
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Cabinet Grotesk', sans-serif;
+    font-weight: 800;
+    font-size: 1rem;
+    color: #fff;
+  }
+
+  .tcard-name { font-weight: 600; font-size: 0.9rem; }
+  .tcard-role { font-size: 0.8rem; color: var(--muted); }
+
+  .stars { color: var(--green); font-size: 0.9rem; margin-bottom: 0.75rem; letter-spacing: 2px; }
+
+  /* CTA SECTION */
+  .final-cta {
+    padding: 7rem 5%;
+    text-align: center;
+    background: var(--ink);
+    color: #fff;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .final-cta::before {
+    content: '';
+    position: absolute;
+    top: -200px; left: 50%;
+    transform: translateX(-50%);
+    width: 800px; height: 800px;
+    background: radial-gradient(circle, rgba(7,94,84,0.25) 0%, transparent 60%);
+    pointer-events: none;
+  }
+
+  .final-cta .section-label { color: #4fd1a5; position: relative; }
+
+  .final-cta .section-title {
+    color: #fff;
+    margin: 0 auto 1.5rem;
+    position: relative;
+  }
+
+  .final-cta .section-title em { color: #4fd1a5; }
+
+  .final-cta .section-sub {
+    color: rgba(255,255,255,0.6);
+    margin: 0 auto 2.5rem;
+    position: relative;
+  }
+
+  .final-cta .cta-trust {
+    margin-top: 2rem;
+    color: rgba(255,255,255,0.35);
+    font-size: 0.82rem;
+    position: relative;
+  }
+
+  /* WAITLIST FORM */
+  .waitlist-form {
+    display: flex;
+    gap: 8px;
+    width: 100%;
+    max-width: 440px;
+    position: relative;
+  }
+
+  .waitlist-form input {
+    flex: 1;
+    padding: 0.85rem 1.2rem;
+    border: 1.5px solid var(--rule);
+    border-radius: 100px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    background: var(--white);
+    color: var(--ink);
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .waitlist-form input:focus { border-color: var(--green); }
+  .waitlist-form input::placeholder { color: #aaa; }
+
+  .waitlist-form button {
+    background: var(--green);
+    color: var(--white);
+    border: none;
+    padding: 0.85rem 1.6rem;
+    border-radius: 100px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.2s;
+    box-shadow: 0 4px 24px rgba(7,94,84,0.35);
+  }
+
+  .waitlist-form button:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(7,94,84,0.45); }
+  .waitlist-form button:active { transform: scale(0.97); }
+
+  /* Dark form variant */
+  .final-cta .waitlist-form input {
+    background: rgba(255,255,255,0.08);
+    border-color: rgba(255,255,255,0.15);
+    color: #fff;
+  }
+  .final-cta .waitlist-form input::placeholder { color: rgba(255,255,255,0.35); }
+  .final-cta .waitlist-form input:focus { border-color: #4fd1a5; }
+  .final-cta .waitlist-form button {
+    background: #fff;
+    color: var(--ink);
+    box-shadow: 0 4px 24px rgba(0,0,0,0.3);
+  }
+  .final-cta .waitlist-form button:hover {
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+  }
+
+  .waitlist-success {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--green-dark);
+    background: var(--green-light);
+    border: 1px solid rgba(7,94,84,0.2);
+    border-radius: 100px;
+    padding: 0.85rem 1.25rem;
+  }
+
+  .final-cta .waitlist-success {
+    color: #fff;
+    background: rgba(7,94,84,0.2);
+    border-color: rgba(7,94,84,0.3);
+  }
+
+  /* FOOTER */
+  footer {
+    background: var(--ink);
+    color: rgba(255,255,255,0.5);
+    padding: 3rem 5% 2rem;
+  }
+
+  .footer-inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    padding-top: 2rem;
+    border-top: 1px solid rgba(255,255,255,0.08);
+  }
+
+  .footer-logo {
+    font-family: 'Cabinet Grotesk', sans-serif;
+    font-size: 1.3rem;
+    font-weight: 800;
+    color: #fff;
+  }
+  .footer-logo span { color: var(--green); }
+
+  .footer-links {
+    display: flex;
+    gap: 1.5rem;
+    font-size: 0.82rem;
+  }
+
+  .footer-links a {
+    color: rgba(255,255,255,0.4);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .footer-links a:hover { color: #fff; }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: none; }
+  }
+
+  .fade-in {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+  .fade-in.visible {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* TYPING ANIMATION */
+  .typing-dot {
+    display: inline-block;
+    width: 6px; height: 6px;
+    background: #999;
+    border-radius: 50%;
+    margin: 0 2px;
+    animation: blink 1.2s infinite;
+  }
+  .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+  .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+  @keyframes blink {
+    0%, 80%, 100% { opacity: 0.2; transform: scale(0.8); }
+    40% { opacity: 1; transform: scale(1); }
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 900px) {
+    .hero {
+      grid-template-columns: 1fr;
+      text-align: center;
+      gap: 2.5rem;
+    }
+    .hero-sub { margin: 1.5rem auto 0; }
+    .hero-cta-group { align-items: center; }
+    .hero-visual { order: -1; }
+    .chat-demo { width: 320px; margin: 0 auto; }
+    .features-grid { grid-template-columns: 1fr; }
+    .stats-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  @media (max-width: 580px) {
+    nav { padding: 1rem 4%; }
+    .logo { font-size: 1.25rem; }
+    .nav-cta { padding: 0.5rem 1rem; font-size: 0.8rem; }
+    .hero { padding: 6rem 4% 3rem; min-height: auto; }
+    .hero h1 { font-size: clamp(2rem, 8vw, 2.8rem); letter-spacing: -0.5px; }
+    .section { padding: 3.5rem 4%; }
+    .section-title { font-size: clamp(1.6rem, 6vw, 2rem); }
+    .steps { grid-template-columns: 1fr; gap: 1rem; }
+    .step { padding: 1.5rem; }
+    .step::before { font-size: 3.5rem; }
+    .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 1.5rem; }
+    .stat-num { font-size: 2.5rem; }
+    .features-grid { gap: 1rem; }
+    .feature-card { padding: 1.5rem; }
+    .final-cta { padding: 4rem 4%; }
+    .waitlist-form { flex-direction: column; }
+    .waitlist-form button { width: 100%; text-align: center; }
+    .footer-inner { flex-direction: column; text-align: center; }
+    .chat-demo { width: 100%; max-width: 320px; margin: 0 auto; }
+  }
+</style>
+<!-- Firebase SDK (compat for global access) -->
+<script src="https://www.gstatic.com/firebasejs/11.6.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/11.6.0/firebase-analytics-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore-compat.js"></script>
+<script>
+  firebase.initializeApp({
+    apiKey: "AIzaSyAyEDzmtQKTn3yLn5Pn7WHwMwsvYNAxPso",
+    authDomain: "receipto-4256f.firebaseapp.com",
+    projectId: "receipto-4256f",
+    storageBucket: "receipto-4256f.firebasestorage.app",
+    messagingSenderId: "364593721413",
+    appId: "1:364593721413:web:7b77e92ea11e5a5f5cf32c",
+    measurementId: "G-T0RLD3PFNC"
+  });
+
+  var analytics = firebase.analytics();
+  var db = firebase.firestore();
+
+  // Track page view
+  analytics.logEvent('page_view');
+</script>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="logo">Receipto</a>
+  <a href="#free-access" class="nav-cta">Get free access</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero" data-section="hero">
+  <div class="hero-content">
+    <div class="hero-badge">
+      WhatsApp AI &middot; Free Access
+    </div>
+
+    <h1>Your bills &amp; warranties,<br><em>always one message away.</em></h1>
+
+    <p class="hero-sub">
+      Send your receipts, bills, and warranty cards to Receipto on WhatsApp. Ask for anything, anytime. It finds it in seconds.
+    </p>
+
+    <div class="hero-cta-group">
+      <div class="waitlist-form" id="hero-form">
+        <input type="text" id="hero-input" placeholder="your@email.com or +91 phone" autocomplete="off" />
+        <button onclick="handleSignup('hero-form', 'hero-input')">Get free access</button>
+      </div>
+      <span class="cta-hint">100% free &middot; No credit card needed</span>
+    </div>
+  </div>
+
+  <div class="hero-visual">
+    <div class="chat-demo">
+      <div class="chat-window">
+        <div class="chat-header">
+          <div class="chat-avatar">&#129302;</div>
+          <div class="chat-info">
+            <div class="chat-name">Receipto</div>
+            <div class="chat-status">online</div>
+          </div>
+        </div>
+        <div class="chat-body" id="chat-body">
+          <div class="bubble out">
+            Find my Samsung TV warranty card
+            <div class="bubble-time">10:42 AM &#10003;&#10003;</div>
+          </div>
+        </div>
+        <div class="chat-input-bar">
+          <div class="chat-input-field">Type a message...</div>
+          <div class="chat-send-btn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="white"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS BAND -->
+<div class="stats-band" data-section="stats">
+  <div class="stats-grid">
+    <div class="stat">
+      <div class="stat-num">&lt;3s</div>
+      <div class="stat-label">Average retrieval time</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">24/7</div>
+      <div class="stat-label">Always available</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">100%</div>
+      <div class="stat-label">Private &amp; encrypted</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">0</div>
+      <div class="stat-label">Apps to download</div>
+    </div>
+  </div>
+</div>
+
+<!-- HOW IT WORKS -->
+<section class="section" data-section="how-it-works" style="text-align:center;">
+  <div class="fade-in">
+    <div class="section-label">How It Works</div>
+    <div class="section-title">Three steps,<br><em>zero friction.</em></div>
+    <p class="section-sub">No apps, no sign-ups, no uploading to websites. Just WhatsApp.</p>
+  </div>
+  <div class="steps fade-in">
+    <div class="step" data-n="1">
+      <div class="step-icon">&#128228;</div>
+      <h3>Send your docs</h3>
+      <p>Forward bills, photos of warranty cards, or PDFs directly to Receipto on WhatsApp. That's it.</p>
+    </div>
+    <div class="step" data-n="2">
+      <div class="step-icon">&#129504;</div>
+      <h3>We read &amp; store them</h3>
+      <p>Our AI extracts the key details like product name, amount, date, and expiry, then organizes everything in your personal vault.</p>
+    </div>
+    <div class="step" data-n="3">
+      <div class="step-icon">&#128172;</div>
+      <h3>Ask for anything</h3>
+      <p>"Show my Flipkart order from last month" or "When does my fridge warranty expire?" Just ask in plain English.</p>
+    </div>
+    <div class="step" data-n="4">
+      <div class="step-icon">&#128276;</div>
+      <h3>Get alerts that matter</h3>
+      <p>Receipto pings you before warranties expire and when return windows are about to close.</p>
+    </div>
+  </div>
+</section>
+
+<!-- QUERIES -->
+<section class="section" style="background: var(--white);" data-section="queries">
+  <div class="queries-inner fade-in">
+    <div class="section-label">What You Can Ask</div>
+    <div class="section-title" style="margin:0 auto;">Talk to it like a <em>person.</em></div>
+    <p class="section-sub" style="margin:1rem auto 0;">No dropdowns, no filters, no folders. Just type what you need.</p>
+    <div class="query-pills">
+      <div class="pill">My phone bill from March</div>
+      <div class="pill">Show all Amazon orders above &#8377;2000</div>
+      <div class="pill">When does my AC warranty expire?</div>
+      <div class="pill">My latest electricity bill</div>
+      <div class="pill">Appliances still under warranty</div>
+      <div class="pill">Oldest receipt I have</div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="section features-section" data-section="features" style="text-align:center;">
+  <div class="fade-in">
+    <div class="section-label">Everything Included</div>
+    <div class="section-title">Built for the way<br><em>you actually live.</em></div>
+    <p class="section-sub">Every feature designed around how real people manage their documents, not how software thinks they should.</p>
+  </div>
+  <div class="features-grid fade-in">
+    <div class="feature-card">
+      <div class="feature-icon">&#128231;</div>
+      <h3>Gmail auto-sync</h3>
+      <p>Connect your inbox and Receipto quietly grabs every bill, order confirmation, and e-warranty that arrives. Without you lifting a finger.</p>
+      <span class="feature-tag">Autopilot</span>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">&#128276;</div>
+      <h3>Warranty expiry alerts</h3>
+      <p>Get a WhatsApp message 30 days before a warranty ends. Never lose coverage on an expensive appliance again.</p>
+      <span class="feature-tag">Proactive</span>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">&#128451;&#65039;</div>
+      <h3>Smart categorisation</h3>
+      <p>Every receipt is automatically tagged by category (electronics, groceries, travel, subscriptions) so your vault stays organised without effort.</p>
+      <span class="feature-tag">Automatic</span>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">&#128274;</div>
+      <h3>Private &amp; encrypted</h3>
+      <p>Your documents are end-to-end encrypted. Only you can access your vault. We will never sell your data to advertisers.</p>
+      <span class="feature-tag">Secure</span>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="social-strip" data-section="testimonials">
+  <div class="section-title fade-in">People are already <em>loving it.</em></div>
+  <p class="section-sub fade-in" style="text-align:center;margin:0 auto 2.5rem;">Early access feedback from our beta testers.</p>
+  <div class="testimonials">
+    <div class="tcard fade-in">
+      <div class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+      <p>"I just forwarded 3 years of bills into one chat. Found my washing machine warranty in 5 seconds when it broke down. Saved me &#8377;8000."</p>
+      <div class="tcard-author">
+        <div class="tcard-avatar" style="background:#075E54;">P</div>
+        <div>
+          <div class="tcard-name">Priya M.</div>
+          <div class="tcard-role">Bangalore</div>
+        </div>
+      </div>
+    </div>
+    <div class="tcard fade-in">
+      <div class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+      <p>"The Gmail sync is ridiculous. It just pulled in every Amazon and Flipkart order I've ever made. I didn't have to do anything."</p>
+      <div class="tcard-author">
+        <div class="tcard-avatar" style="background:#FF4F2B;">A</div>
+        <div>
+          <div class="tcard-name">Arjun K.</div>
+          <div class="tcard-role">Chennai</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<section class="final-cta" id="free-access" data-section="free-access">
+  <div class="section-label fade-in">Get Started</div>
+  <div class="section-title fade-in">Try Receipto for <em>free.</em></div>
+  <p class="section-sub fade-in" style="margin-left:auto;margin-right:auto;">
+    Drop your email or WhatsApp number and we'll reach out with access. No spam, ever.
+  </p>
+  <div class="waitlist-form fade-in" id="final-form" style="max-width:440px;margin:0 auto;">
+    <input type="text" id="final-input" placeholder="your@email.com or +91 phone" autocomplete="off" />
+    <button onclick="handleSignup('final-form', 'final-input')">Get free access</button>
+  </div>
+  <div class="cta-trust">Completely free &middot; No credit card needed</div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-logo">Receipto</div>
+    <span style="font-size:0.82rem;">&copy; 2025 Receipto. Made with &#9829; in India.</span>
+    <div class="footer-links">
+      <a href="#">Privacy</a>
+      <a href="#">Terms</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Waitlist signup handler
+  async function handleSignup(formId, inputId) {
+    const input = document.getElementById(inputId);
+    const val = input.value.trim();
+    if (!val) { input.focus(); return; }
+
+    const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const phoneRe = /^[+\d\s\-()]{7,}$/;
+    if (!emailRe.test(val) && !phoneRe.test(val)) {
+      input.style.borderColor = '#e24b4a';
+      input.placeholder = 'Please enter a valid email or phone';
+      input.value = '';
+      setTimeout(() => { input.style.borderColor = ''; input.placeholder = 'your@email.com or +91 phone'; }, 2000);
+      return;
+    }
+
+    const form = document.getElementById(formId);
+    const btn = form.querySelector('button');
+    btn.textContent = 'Saving...';
+    btn.disabled = true;
+
+    try {
+      const type = emailRe.test(val) ? 'email' : 'phone';
+      await db.collection('waitlist').add({
+        [type]: val,
+        source: formId === 'hero-form' ? 'hero' : 'footer',
+        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+        userAgent: navigator.userAgent
+      });
+      analytics.logEvent('waitlist_signup', { method: type, source: formId });
+    } catch (err) {
+      console.error('Firebase write failed:', err);
+    }
+
+    form.innerHTML = '<div class="waitlist-success"><span>&#10003;</span> We\'ll reach out to you with access soon!</div>';
+  }
+
+  // Allow Enter key on inputs
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && e.target.tagName === 'INPUT') {
+      const id = e.target.id;
+      if (id === 'hero-input') handleSignup('hero-form', 'hero-input');
+      if (id === 'final-input') handleSignup('final-form', 'final-input');
+    }
+  });
+
+  // Fade-in observer
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+  // Chat animation
+  const chatBody = document.getElementById('chat-body');
+  const messages = [
+    { type: 'in', text: '&#128206; <b>Samsung_TV_Warranty.pdf</b><br><span style="font-size:0.75rem;color:#777">3 years coverage &middot; Expires Dec 2026</span>', delay: 1800 },
+    { type: 'in', text: 'Here it is! Your Samsung TV warranty is valid until <b>December 2026</b>. Want me to set a reminder before it expires? &#128276;', delay: 3000 },
+  ];
+
+  function addTyping() {
+    const t = document.createElement('div');
+    t.className = 'bubble in typing-bubble';
+    t.style = 'display:flex;align-items:center;gap:4px;padding:0.7rem;';
+    t.innerHTML = '<span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span>';
+    chatBody.appendChild(t);
+    chatBody.scrollTop = chatBody.scrollHeight;
+  }
+
+  function removeTyping() {
+    const t = chatBody.querySelector('.typing-bubble');
+    if (t) t.remove();
+  }
+
+  let i = 0;
+  function showNext() {
+    if (i >= messages.length) return;
+    const m = messages[i++];
+    setTimeout(() => {
+      removeTyping();
+      const div = document.createElement('div');
+      div.className = `bubble ${m.type}`;
+      div.innerHTML = m.text + `<div class="bubble-time">10:42 AM</div>`;
+      chatBody.appendChild(div);
+      chatBody.scrollTop = chatBody.scrollHeight;
+      if (i < messages.length) {
+        setTimeout(() => { addTyping(); showNext(); }, 500);
+      }
+    }, m.delay);
+  }
+
+  setTimeout(() => { addTyping(); showNext(); }, 800);
+
+  // Analytics: track nav CTA click
+  document.querySelector('.nav-cta')?.addEventListener('click', () => {
+    analytics.logEvent('cta_click', { location: 'nav' });
+  });
+
+  // Analytics: track section views
+  const sectionObserver = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        analytics.logEvent('section_view', { section: e.target.dataset.section });
+        sectionObserver.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.3 });
+
+  document.querySelectorAll('[data-section]').forEach(el => sectionObserver.observe(el));
+</script>
+
+</body>
+</html>
